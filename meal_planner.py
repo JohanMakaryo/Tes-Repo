@@ -14,7 +14,7 @@ def ask_gpt3_turbo(message, chat_log=None):
         messages=[
             {
                 "role": "system",
-                "content": "Anda adalah AI agent yang bertindak sebagai chef andal yang bisa memikirikan resep makan dari bahan-bahan yang terbatas. Anda adalah chef yang sangat ahli dalam masakan Indonesia dan nusantara.",
+                "content": "Anda adalah AI agent yang bertindak sebagai event planner andal yang bisa memikirikan jadwal dan susunan acara. Anda adalah event planner yang sangat ahli dalam acara casual,semi formal, dan formal.",
             },
             {"role": "user", "content": message},
         ],
@@ -25,55 +25,54 @@ def ask_gpt3_turbo(message, chat_log=None):
 
 # Streamlit app
 def main():
-    st.title("Detikfood Meal Prep Planner")
+    st.title("Event Planner")
 
-    bahan = st_tags(label="Daftarkan bahan-bahan di dapur Anda")
-    makanan = st_tags(
-        label="(optional) Sebutkan makanan apa saja yang sudah Anda masak"
+    tipe = st_tags(label="Tipe Acara")
+    acara = st_tags(
+        label="(optional) Sebutkan acara yang sudah pernah dirancang"
     )
-    daerah = st.text_input(
-        "(optional) Anda mencari resep khas daerah mana? (Misalnya: Jawa, Sumatera, Bali)"
+    gaya_acara = st.text_input(
+        "(optional) Anda ingin gaya acara seperti apa? (Misalnya: casual, semi formal, formal)"
     )
-    ramah_anak = st.radio("Opsi makanan ramah anak", ("Tidak", "Ya"))
+    tempat_acara = st.radio("Opsi tempat acara", ("Outdoor", "Indoor"))
     agama_budaya = st.text_input(
-        "(optional) Apakah Anda memiliki batasan seperti halal atau vegetarian?"
+        "(optional) Apakah Anda memiliki batasan seperti alkohol atau non alkohol?"
     )
-    kompleks = st.radio(
-        "Anda mencari resep yang sederhana dan cepat atau yang lebih kompleks?",
-        ("Sederhana dan cepat", "Kompleks"),
+    durasi_acara = st.radio(
+        "Anda mencari acara dengan durasi kurang dari 4 jam atau maksimal 4 jam?",
+        ("kurang dari 4 jam", "maksimal 4 jam"),
     )
-    metode = st.multiselect("Preferensi metode memasak", ["goreng", "rebus", "bakar"])
+    metode = st.multiselect("Preferensi kostum / dresscode", ["casual", "semi formal", "formal"])
     jenis = st.radio(
-        "Anda mencari resep untuk?", ("sarapan", "makan siang", "makan malam")
+        "Anda mencari konsep acara seperti?", ("casual", "semi formal", "formal")
     )
-    porsi = st.number_input(
-        "Untuk berapa orang Anda akan memasak?", min_value=1, max_value=5, step=1
+    partisipan = st.number_input(
+        "Berapa banyak orang yang akan menghadiri acara Anda?", min_value=1, max_value=100, step=1
     )
 
     if st.button("Kirim"):
 
         prompt = f"""
-                Buatkan saya 3 resep masakan berbeda berdasarkan kriteria berikut ini, perlu dicatat anda tidak perlu memakai semua bahan untuk satu resep, anda bisa menambahkan bumbu-bumbu dasar pada resep, dan anda bisa menggunakan alat dapur dasar dalam proses masak.
+                Buatkan saya 3 jadwal dan susunan acara sesuai kriteria berikut ini, perlu dicatat anda tidak perlu memakai semua konsep, anda bisa menambahkan hal lain yang diperlukan untuk acara ini, dan anda bisa mengatur acaranya nanti akan seperti apa.
 
-                Bahan-bahan: {bahan}
-                Makanan yang sudah saya siapkan: {makanan}
-                Jenis masakan daerah: {daerah}
-                Opsi ramah anak: {ramah_anak}
-                Pertimbangan agama/budaya: {agama_budaya}
-                Kesederhanaan resep: {kompleks}
-                metode memasak: {metode}
-                jenis makanan: {jenis}
-                porsi: {porsi} orang
-
+                Konsep acara: {konsep}
+                Tipe acara yang sudah saya bikin: {acara}
+                Jenis acara: {jenis_acara}
+                Opsi alkohol / non alkohol: {alkohol_non_alkohol}
+                Gaya acara: {gaya_acara}
+                Suasana acara: {suasana_acara}
+                Kostum: {kostum}
+                Jumlah partisipan: {jumlah_partisipan}
+        
                 Format output:
-                #[Nama Resep]
-                ##Bahan-Bahan:
+                #[Tipe acara]
+                ##Suasana acara:
                 [konten]
 
-                ##Cara Memasak:
+                ##Jenis acara:
                 [konten]
 
-                ##Cara penyajian:
+                ##Jadwal acara:
                 [konten]
         """
 
